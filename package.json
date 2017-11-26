@@ -1,0 +1,13 @@
+{
+  "name": "msacontos",
+  "version": "0.0.1",
+  "description": "Bot for customers of Contos Bank",
+  "main": "app.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sukhans Asrani",
+  "license": "ISC"
+}
