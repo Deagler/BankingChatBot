@@ -6,7 +6,7 @@ exports.getStock = (companyName, callback) => {
     getTickerName(companyName, callback); 
 };
 
-
+/* Gets the final stock price and calls a callback function */
 function getStockPrice(companyData, callback) {
     yahoo.quote({
         symbol: companyData.symbol,
