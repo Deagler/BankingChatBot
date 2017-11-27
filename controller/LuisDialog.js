@@ -66,7 +66,7 @@ exports.startDialog = function (bot) {
         }
     }, (session, results, next) => {
         if(results.response) {
-            session.dialogData.time = builder.EntityRecognizer.parseTime(results.response);
+            session.dialogData.time = results.response.resolution.start;
         }
 
         builder.Prompts.text(session, "What is this appointment for?");
