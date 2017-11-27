@@ -3,11 +3,19 @@
   "version": "0.0.1",
   "description": "Bot for customers of Contos Bank",
   "main": "app.js",
-  "dependencies": {},
+  "dependencies": {
+    "botbuilder": "^3.12.0",
+    "restify": "^6.3.4",
+    "yahoo-finance": "^0.3.5"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sukhans Asrani",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "github.com/Deagler/MSAContos"
+  }
 }

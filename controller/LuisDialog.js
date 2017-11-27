@@ -1,5 +1,5 @@
 var builder = require('botbuilder');
-
+var stocks = require('../API/stockAPI');
 
 
 
@@ -12,8 +12,24 @@ exports.startDialog = function (bot) {
     bot.dialog('SearchStocks', function (session, args) {
 
         var companyObj = builder.EntityRecognizer.findEntity(args.intent.entities, 'company');
+        
+        if(!companyObj || companyObj == null || companyObj.entity == null) 
+            return;
 
-        session.send(`Retrieving stocks for '${companyObj.entity}'`);
+        // let user know we're grabbing their data!
+        session.sendTyping();
+
+        stocks.getStock(companyObj.entity, (data) => {
+            console.log(data.price);
+            var stockCard = stocks.buildStockCard(data);
+            var msg = new builder.Message(session).addAttachment({
+                contentType: "application/vnd.microsoft.card.adaptive",
+                content: stockCard
+            });
+
+            session.send(msg);
+
+        })
     }).triggerAction({
         matches: 'SearchStocks'
     });
@@ -21,3 +37,4 @@ exports.startDialog = function (bot) {
     
 
 }
+
