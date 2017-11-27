@@ -39,15 +39,15 @@ exports.genericBookingCard = (title, bookingData) => {
   var severityString = "";
   var severityColour = "";
   switch(bookingData.severity) {
-    case 1:
+    case "1":
       severityString = "High";
-      severityColour = "attention";
-      break;
-    case 2:
-      severityString = "Medium";
       severityColour = "warning";
       break;
-    case 3:
+    case "2":
+      severityString = "Medium";
+      severityColour = "attention";
+      break;
+    case "3":
       severityString = "Low";
       severityColour = "good";
       break;
