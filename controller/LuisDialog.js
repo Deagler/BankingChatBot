@@ -1,5 +1,6 @@
 var builder = require('botbuilder');
 var stocks = require('../API/stockAPI');
+var booking = require("../API/bookingAPI");
 
 
 
@@ -33,6 +34,67 @@ exports.startDialog = function (bot) {
     }).triggerAction({
         matches: 'SearchStocks'
     });
+
+    bot.dialog('BookAppointment', [(session, args, next) => {
+        console.log(args);
+        session.dialogData.args = args || {};
+        if(!session.conversationData.username) {
+            builder.Prompts.text(session, "What is your name?");
+        } else {
+            next();
+        }
+         
+        },(session, results, next) => {
+            if(results.response)
+                session.conversationData.username =  results.response;
+        
+
+        args = session.dialogData.args;
+        if(!args)
+            console.log("Args doesnt exist!");
+
+        var timeObj = args.intent.entities[0];
+        
+  
+
+        if(!timeObj || timeObj == null || timeObj.entity == null) {
+            builder.Prompts.time(session, "What time do you want to set the appointment for?");
+        } else {
+            session.dialogData.time = builder.EntityRecognizer.parseTime(timeObj.entity);
+          
+            next()
+        }
+    }, (session, results, next) => {
+        if(results.response) {
+            session.dialogData.time = builder.EntityRecognizer.parseTime(results.response);
+        }
+
+        builder.Prompts.text(session, "What is this appointment for?");
+    }, (session, results, next) => {
+        session.dialogData.description = results.response;
+
+        var bookingData = {
+            name: session.conversationData.username,
+            time: session.dialogData.time,
+            description: session.dialogData.description,
+        } // Severity can be 1 = High, 2 = Normal, 3 = Low
+        
+        var reviewCard  = booking.reviewBookingCard(bookingData);
+        var msg = new builder.Message(session).addAttachment({
+            contentType: "application/vnd.microsoft.card.adaptive",
+            content: reviewCard
+        });
+
+        session.endDialog(msg);
+
+
+    }, (session, results, next) => {
+        console.log(results);
+    }]).triggerAction({
+        matches: 'BookAppointment'
+    });
+
+   
 
     
 
