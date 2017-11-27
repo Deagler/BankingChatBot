@@ -55,7 +55,7 @@ exports.buildStockCard = (data) => {
         month: "long",  day: "numeric", hour: "2-digit", minute: "2-digit", timeZoneName: "short"  
     };  
 
-    var marketTime = new Date(data.price.postMarketTime);
+    var marketTime = new Date(data.price.postMarketTime || data.price.regularMarketTime);
 
     var changeString = "";
     var changeColour = "";
