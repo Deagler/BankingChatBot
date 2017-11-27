@@ -21,8 +21,7 @@ exports.saveBooking = (session, bookingData, callback) => {
       
       request(options, function (error, response, body) {
         if (!error && response.statusCode == 201) {
-            console.log(body)
-            callback(session, bookingData)
+            callback(session, body);
         }
         else{
             console.log("not saved");
@@ -30,12 +29,64 @@ exports.saveBooking = (session, bookingData, callback) => {
       });
 }
 
+exports.getBookings = (session, username, callback) => {
+  var url = 'http://msaassessment.azurewebsites.net/tables/bookingtable';
+  var options = {'headers':{'ZUMO-API-VERSION': '2.0.0'}};
+  request.get(url, options, (err, resp, body) => {
+    if(err) {
+      console.log(err)
+    } else {
+      callback(body, session, username);
+    }
+  });
+
+}
+
+exports.deleteBooking = (session, deletecode, callback) => {
+  var url = 'http://msaassessment.azurewebsites.net/tables/bookingtable';
+  var options = {'headers':{'ZUMO-API-VERSION': '2.0.0'}};
+
+  /* Getting all the bookings */
+  request.get(url, options, (err, resp, body) => {
+    if(err) {
+      console.log(err)
+    } else {
+      var bookings = JSON.parse(body);
+
+      for(var index in bookings) {
+        var booking = bookings[index];
+        
+        if(booking.deleteCode == deletecode) {
+          var options = {
+            url: url + "\\" + booking.id,
+            method: 'DELETE',
+            headers: {
+                'ZUMO-API-VERSION': '2.0.0',
+                'Content-Type':'application/json'
+            }
+          };
+          request(options,function (err, res, body){
+            if( !err && res.statusCode === 200){
+                callback(body, session);
+            }else {
+                console.log(err);
+                console.log(res);
+            }
+        })
+        }
+      }
+     }
+  });
+  
+}
+
 exports.genericBookingCard = (title, bookingData) => {
   var options = {  
-    month: "long",  day: "numeric", hour: "2-digit", minute: "2-digit"
+    month: "long",  day: "numeric", hour: "2-digit", minute: "2-digit", year: "numeric"
   };  
 
   var temptime = new Date(bookingData.time);
+  var temptime2 = new Date(bookingData.createdAt);
   var severityString = "";
   var severityColour = "";
   switch(bookingData.severity) {
@@ -69,6 +120,10 @@ exports.genericBookingCard = (title, bookingData) => {
     {
         "title": "Description:",
         "value": bookingData.description
+    },
+    {
+      "title": "Created At:",
+      "value": temptime2.toLocaleTimeString("en-us", options)
     }
   ];
 

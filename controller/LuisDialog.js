@@ -28,7 +28,7 @@ exports.startDialog = function (bot) {
                 content: stockCard
             });
 
-            session.send(msg);
+            session.endDialog(msg);
 
         })
     }).triggerAction({
@@ -36,7 +36,7 @@ exports.startDialog = function (bot) {
     });
 
     bot.dialog('BookAppointment', [(session, args, next) => {
-        console.log(args);
+        console.log(args.intent.entities);
         session.dialogData.args = args || {};
         if(!session.conversationData.username) {
             builder.Prompts.text(session, "What is your name?");
@@ -94,6 +94,59 @@ exports.startDialog = function (bot) {
         matches: 'BookAppointment'
     });
 
+    bot.dialog("ViewAppointments",[(session, args, next) => {
+        if(!session.conversationData.username) {
+            builder.Prompts.text(session, "What is your name?");
+        } else {
+            next();
+        }
+    }, (session, results, next) => {
+        if(results.response) {
+            session.conversationData.username = results.response;
+        }
+        session.sendTyping();
+        booking.getBookings(session, session.conversationData.username, (body, session, username) => {
+            var bookings = JSON.parse(body);
+            var attachments = [];
+            for (var index in bookings) {
+                var appointment = bookings[index];
+
+                if(username.toLowerCase() == appointment.username.toLowerCase()) {  
+                    attachments.push({
+                        contentType: "application/vnd.microsoft.card.adaptive",
+                        content: booking.genericBookingCard("Booking", appointment)
+                    });
+                }
+            }
+
+            var message = new builder.Message(session).attachmentLayout(builder.AttachmentLayout.carousel).attachments(attachments);
+            session.endDialog(message);
+        });
+    }]).triggerAction({
+        matches: "ViewAppointments"
+    });
+
+    bot.dialog("DeleteAppointment",[(session, args, next) => {
+        builder.Prompts.text(session, "Enter a delete code for an appointment: ");
+    }, (session, results, next) => {
+        if(results.response) {
+            session.dialogData.code = results.response;
+        }
+        session.sendTyping();
+        booking.deleteBooking(session, session.dialogData.code, (body, session) => {
+            
+            var msg = new builder.Message(session).addAttachment({
+                contentType: "application/vnd.microsoft.card.adaptive",
+                content:booking.genericBookingCard("Booking succesfully deleted!", JSON.parse(body))
+            });
+            
+            session.send(msg);
+            session.endDialog("The booking shown above was successfully deleted.")
+        })
+
+    }]).triggerAction({
+        matches:"DeleteAppointment"
+    });
    
 
     
