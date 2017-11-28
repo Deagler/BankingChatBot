@@ -8,9 +8,13 @@
     "restify": "^6.3.4",
     "yahoo-finance": "^0.3.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "mocha": "^4.0.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "author": "Sukhans Asrani",
   "license": "ISC",
