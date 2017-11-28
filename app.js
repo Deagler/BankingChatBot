@@ -26,12 +26,28 @@ var randomString = function(length) {
     return text;
 }
 
+function askForFeedback(session, title, subtitle) {
+    title = (title || "Feedback");
+    subtitle = (subtitle || "Would you like to leave any feedback today?");
+    var feedbackCard = new builder.HeroCard(session)
+    .title(title)
+    .subtitle(subtitle)
+    .buttons([
+        builder.CardAction.postBack(session, 'LeaveFeedback', 'Yes'),
+        builder.CardAction.postBack(session, 'NoLeaveFeedback', 'No'),
+    ]);
+
+    var msg = new builder.Message(session).addAttachment(feedbackCard);
+    session.send(msg);
+}
+
 var bot = new builder.UniversalBot(connector, function (session) {
-    if(session.message && session.message.value) {
+    //console.log(session.message);
+    if(session.message && session.message.value) { 
         var data = session.message.value;
         if(data.type == "cancelBooking") {
-            session.send("Booking was not saved") // are you done? yes/no, Leave feedback, sentiment analysis
-
+            askForFeedback(session, "Booking was not saved");
+      
         } else if (data.type == "confirmBooking") {
   
             data.booking.severity = data.severity;
@@ -46,16 +62,26 @@ var bot = new builder.UniversalBot(connector, function (session) {
                 });
     
                 session.send(msg);
-                session.send("Booking successfully saved! Your unique delete code for this booking is: "+bookingData.deleteCode);
+                askForFeedback(session, "Booking successfully saved!", "Your unique delete code for this booking is: "+bookingData.deleteCode+ "\nWould you like to leave any feedback?");
+               
             });
             
         }
             
+    } else if (session.message && session.message.text == "LeaveFeedback") {
+        session.beginDialog("LeaveFeedback");
+    }  else if (session.message && session.message.text == "NoLeaveFeedback") {
+        if(session.conversationData.username) {
+            session.send(`Thank you ${session.conversationData.username}, Have a nice day!`);
+        } else {
+            session.send(`Thank you, Have a nice day!`);
+        }
     } else {
         session.send("Error occcured, Try entering a command such as: 'Get stock for microsoft' or 'book an appointment'");
     }
     
 });
-    
+
+
 
 luis.startDialog(bot);

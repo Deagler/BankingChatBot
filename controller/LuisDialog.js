@@ -1,7 +1,7 @@
 var builder = require('botbuilder');
 var stocks = require('../API/stockAPI');
 var booking = require("../API/bookingAPI");
-
+var cognitive = require("../API/cognitiveAPI");
 
 
 exports.startDialog = function (bot) {
@@ -66,30 +66,45 @@ exports.startDialog = function (bot) {
         }
     }, (session, results, next) => {
         if(results.response) {
-            session.dialogData.time = builder.EntityRecognizer.parseTime(results.response);
+            session.dialogData.time = results.response.resolution.start;
         }
 
         builder.Prompts.text(session, "What is this appointment for?");
     }, (session, results, next) => {
         session.dialogData.description = results.response;
+        session.sendTyping();
 
-        var bookingData = {
-            name: session.conversationData.username,
-            time: session.dialogData.time,
-            description: session.dialogData.description,
-        } // Severity can be 1 = High, 2 = Normal, 3 = Low
-        
-        var reviewCard  = booking.reviewBookingCard(bookingData);
-        var msg = new builder.Message(session).addAttachment({
-            contentType: "application/vnd.microsoft.card.adaptive",
-            content: reviewCard
+        cognitive.analyseSentiment(session.dialogData.description, session, (session, body) => {
+            var sentiment = Number(body.documents[0].score);
+
+            var severity = "3"; // Defaults as Low severity
+
+            if(sentiment > 0.3 && sentiment < 0.9) {
+                severity = "2" // Normal
+            } else if (sentiment <= 0.3) {
+                severity = "1"; // High
+            }
+
+
+
+            var bookingData = {
+                name: session.conversationData.username,
+                time: session.dialogData.time,
+                description: session.dialogData.description,
+                severity: severity
+            } // Severity can be 1 = High, 2 = Normal, 3 = Low
+            
+            var reviewCard  = booking.reviewBookingCard(bookingData);
+            var msg = new builder.Message(session).addAttachment({
+                contentType: "application/vnd.microsoft.card.adaptive",
+                content: reviewCard
+            });
+    
+            session.endDialog(msg);
         });
+        
 
-        session.endDialog(msg);
 
-
-    }, (session, results, next) => {
-        console.log(results);
     }]).triggerAction({
         matches: 'BookAppointment'
     });
@@ -141,12 +156,30 @@ exports.startDialog = function (bot) {
             });
             
             session.send(msg);
-            session.endDialog("The booking shown above was successfully deleted.")
+            session.endDialog("The booking was successfully deleted.")
         })
 
     }]).triggerAction({
         matches:"DeleteAppointment"
     });
+
+    bot.dialog("LeaveFeedback",[(session, args, next) => {
+        builder.Prompts.text(session, "Please enter some feedback on your experience and tell us what we can do to make it better next time!")
+    }, (session, results, next) => {
+
+        cognitive.analyseSentiment(results.response, session, (session, body) => {
+            var sentiment = body.documents[0].score;
+            if(Number(sentiment) > 0.8) {
+                session.endDialog("Your feedback has been noted! We're glad you had a pleasant experience!");
+            } else {
+                session.endDialog("Your feedback has been noted! We're sorry you didn't have a pleasant experience.");
+            }
+            
+        });
+
+    }]).triggerAction({
+        matches: "LeaveFeedback"
+    })  
    
 
     
