@@ -146,7 +146,7 @@ exports.genericBookingCard = (title, bookingData) => {
         },
         {
           "type": "TextBlock",
-          "text": `**Severity:** ${severityString}`,
+          "text": `**Urgency:** ${severityString}`,
           "color": severityColour
         },
       ]
@@ -195,14 +195,14 @@ exports.reviewBookingCard = (bookingData) => {
               },
               {
                 "type": "TextBlock",
-                "text": "Severity",
+                "text": "Urgency",
                 "weight": "bolder"
               },
               {
                 "type": "Input.ChoiceSet",
                 "id": "severity",
                 "style":"compact",
-                "value": "3",
+                "value": bookingData.severity.toString(),
                 "choices": [
                   {
                     "title": "High",
@@ -214,8 +214,8 @@ exports.reviewBookingCard = (bookingData) => {
                   },
                   {
                     "title": "Low",
-                    "value": "3",
-                    "isSelected": "true"
+                    "value": "3"
+                    //"isSelected": "true"
                   }
                 ]
               }
