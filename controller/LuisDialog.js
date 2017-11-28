@@ -10,28 +10,38 @@ exports.startDialog = function (bot) {
     
     bot.recognizer(recognizer);
 
-    bot.dialog('SearchStocks', function (session, args) {
-
+    bot.dialog('SearchStocks', [ function (session, args, next) {
+        console.log(args.intent);
         var companyObj = builder.EntityRecognizer.findEntity(args.intent.entities, 'company');
         
-        if(!companyObj || companyObj == null || companyObj.entity == null) 
-            return;
+        if(!companyObj || companyObj == null || companyObj.entity == null)  {
+            builder.Prompts.text(session, "Enter a company you want to get the stock value for:");
+        } else {
+            session.dialogData.company = companyObj.entity;
+            next();
+        }
 
-        // let user know we're grabbing their data!
+    }, function (session, results, next) {
+
+    
+        if (results.response) {
+            session.dialogData.company = results.response;
+        }
+         // let user know we're grabbing their data!
         session.sendTyping();
-
-        stocks.getStock(companyObj.entity, (data) => {
-            console.log(data.price);
+         
+        stocks.getStock(session.dialogData.company, (data) => {
+           
             var stockCard = stocks.buildStockCard(data);
             var msg = new builder.Message(session).addAttachment({
                 contentType: "application/vnd.microsoft.card.adaptive",
                 content: stockCard
             });
-
+        
             session.endDialog(msg);
-
+        
         })
-    }).triggerAction({
+    }]).triggerAction({
         matches: 'SearchStocks'
     });
 

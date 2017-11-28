@@ -52,7 +52,7 @@ var bot = new builder.UniversalBot(connector, function (session) {
   
             data.booking.severity = data.severity;
             data.booking.deleteCode = randomString(7);
-            
+            session.send("Attempting to confirm booking...")
             session.sendTyping();
             booking.saveBooking(session, data.booking, (session, bookingData) => {
                 var bookingCard = booking.genericBookingCard("Booking Saved!", bookingData);
