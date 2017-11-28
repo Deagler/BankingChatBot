@@ -44,7 +44,7 @@ function getTickerName(companyName, callback) {
             symbol: data.ResultSet.Result[0].symbol,
             exchange: data.ResultSet.Result[0].exchDisp
         }
-        console.log(data.ResultSet);
+        //console.log(data.ResultSet);
         /* Get the actual stock price */
         getStockPrice(companyData, callback);
     })

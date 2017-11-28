@@ -11,7 +11,7 @@ exports.startDialog = function (bot) {
     bot.recognizer(recognizer);
 
     bot.dialog('SearchStocks', [ function (session, args, next) {
-        console.log(args.intent);
+        //console.log(args.intent);
         var companyObj = builder.EntityRecognizer.findEntity(args.intent.entities, 'company');
         
         if(!companyObj || companyObj == null || companyObj.entity == null)  {
@@ -46,7 +46,7 @@ exports.startDialog = function (bot) {
     });
 
     bot.dialog('BookAppointment', [(session, args, next) => {
-        console.log(args.intent.entities);
+        
         session.dialogData.args = args || {};
         if(!session.conversationData.username) {
             builder.Prompts.text(session, "What is your name?");
