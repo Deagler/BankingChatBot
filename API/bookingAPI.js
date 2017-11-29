@@ -111,7 +111,7 @@ exports.genericBookingCard = (title, bookingData) => {
   var facts = [
     {
         "title": "Booking for:",
-        "value": bookingData.name
+        "value": bookingData.username
     },
     {
         "title": "Time:",
@@ -131,6 +131,7 @@ exports.genericBookingCard = (title, bookingData) => {
   {
       "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
       "type": "AdaptiveCard",
+      "speak": `Booking for ${bookingData.description} at ${temptime.toLocaleTimeString("en-us", options)} under the name ${bookingData.username}. Booking created at ${temptime2.toLocaleTimeString("en-us", options)}`,
       "version": "1.0",
       "body": [
         {
@@ -179,6 +180,7 @@ exports.reviewBookingCard = (bookingData) => {
     var reviewCard = 
     {
             "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "speak": `Would you like to confirm your booking for ${bookingData.description} at ${temptime.toLocaleTimeString("en-us", options)} under the name ${bookingData.name}`,
             "type": "AdaptiveCard",
             "version": "1.0",
             "body": [

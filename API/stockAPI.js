@@ -72,6 +72,7 @@ exports.buildStockCard = (data) => {
     var stockCard = {
         "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
         "type": "AdaptiveCard",
+        "speak": `${data.name} is trading at a price of ${data.price.regularMarketPrice.toString()} dollars`,
         "version": "1.0",
         "body": [
             {
