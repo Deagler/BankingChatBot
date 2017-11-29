@@ -191,6 +191,84 @@ exports.startDialog = function (bot) {
         matches: "LeaveFeedback"
     })  
    
+    bot.dialog("Welcome",[(session, args, next) => {
+        var facts = [
+            {
+                "title": "Get Stocks:",
+                "value": "Get the stock value for Microsoft"
+            },
+            {
+                "title": "Book an Appointment:",
+                "value": "I'd like to book an appointment"
+            },
+            {
+                "title": "View your appointments:",
+                "value": "I'd like to view my appointments"
+            },
+            {
+                "title": "Delete an appointment:",
+                "value": "I'd like to delete an appointment"
+            },
+            {
+                "title": "Leave us feedback:",
+                "value": "I'd like to leave some feedback"
+            }
+        ]
+        
+        var card = {
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "type": "AdaptiveCard",
+            "version": "1.0",
+            "body": [
+                {
+                    "type": "Container",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Welcome to Contoso Bank!",
+                            "weight": "bolder",
+                            "size": "medium"
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Here's what you can try!",
+                            "weight": "bolder",
+                            "wrap": true
+                        },
+                        {
+                            "type": "FactSet",
+                            "facts": facts
+                        }
+                    ]
+                }
+            ]
+            
+        }
+
+        var msg = new builder.Message(session).addAttachment(
+            new builder.HeroCard(session)
+                .title("Welcome to Contoso Bank")
+                .subtitle("You can bank on us!")
+                .text("Try enter a command such as 'Get stock prices' or 'Book an appointment'")
+            
+        );
+
+        
+        var msg = new builder.Message(session).addAttachment({
+            contentType: "application/vnd.microsoft.card.adaptive",
+            content:card
+        });
+
+        session.send(msg).endDialog();
+
+    }]).triggerAction({
+        matches: "Welcome"
+    })
 
     
 

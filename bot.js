@@ -63,7 +63,7 @@ function createBot(connector) {
                 session.send(`Thank you, Have a nice day!`);
             }
         } else {
-            session.send("Error occcured, Try entering a command such as: 'Get stock for microsoft' or 'book an appointment'");
+            session.beginDialog("Welcome");
         }
         
     });
