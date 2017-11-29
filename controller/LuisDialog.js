@@ -220,47 +220,20 @@ exports.startDialog = function (bot) {
             "type": "AdaptiveCard",
             "version": "1.0",
             "body": [
-                /*{
-                    "type": "Container",
-                    "items": [
-                        {
-                            "type": "TextBlock",
-                            "text": "Welcome to Contoso Bank!",
-                            "weight": "bolder",
-                            "size": "medium"
-                        }
-                    ]
-                },*/
                 {
                     "type": "Container",
                     "items": [
                         {
-                            "type": "ColumnSet",
-                            "columns": [
-                                {
-                                    "type": "Column",
-                                    "width": "auto",
-                                    "items": [
-                                        {
-                                            "type": "Image",
-                                            "url": "https://i.imgur.com/FH2VLut.png",
-                                            "size": "large"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "Column",
-                                    "width": "stretch",
-                                    "items": [
-                                        {
-                                            "type": "TextBlock",
-                                            "text": "Welcome to the Contoso banking bot!\nHere's what you can try!",
-                                            "weight": "bolder",
-                                            "wrap": true
-                                        },
-                                    ]
-                                }
-                            ]
+                            "type": "Image",
+                            "url": "https://i.imgur.com/FH2VLut.png",
+                            "size": "large",
+                            "horizontalAlignment":"center"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Here's what you can try:",
+                            "weight": "bolder",
+                            "size": "medium"
                         },
                         {
                             "type": "FactSet",
