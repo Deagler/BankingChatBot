@@ -220,7 +220,7 @@ exports.startDialog = function (bot) {
             "type": "AdaptiveCard",
             "version": "1.0",
             "body": [
-                {
+                /*{
                     "type": "Container",
                     "items": [
                         {
@@ -230,15 +230,37 @@ exports.startDialog = function (bot) {
                             "size": "medium"
                         }
                     ]
-                },
+                },*/
                 {
                     "type": "Container",
                     "items": [
                         {
-                            "type": "TextBlock",
-                            "text": "Here's what you can try!",
-                            "weight": "bolder",
-                            "wrap": true
+                            "type": "ColumnSet",
+                            "columns": [
+                                {
+                                    "type": "Column",
+                                    "width": "auto",
+                                    "items": [
+                                        {
+                                            "type": "Image",
+                                            "url": "https://i.imgur.com/FH2VLut.png",
+                                            "size": "large"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Column",
+                                    "width": "stretch",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "Welcome to the Contoso banking bot!\nHere's what you can try!",
+                                            "weight": "bolder",
+                                            "wrap": true
+                                        },
+                                    ]
+                                }
+                            ]
                         },
                         {
                             "type": "FactSet",
@@ -249,14 +271,6 @@ exports.startDialog = function (bot) {
             ]
             
         }
-
-        var msg = new builder.Message(session).addAttachment(
-            new builder.HeroCard(session)
-                .title("Welcome to Contoso Bank")
-                .subtitle("You can bank on us!")
-                .text("Try enter a command such as 'Get stock prices' or 'Book an appointment'")
-            
-        );
 
         
         var msg = new builder.Message(session).addAttachment({
