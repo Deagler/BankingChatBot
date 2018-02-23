@@ -1,6 +1,3 @@
-
-Banking chat bot created for Microsoft Student Accelerator Advanced Training
-
 A simplistic Microsoft Azure hosted chat bot created for the final assessment in Microsoft Student Accelerator.
 
 ## Technologies/Libraries Used:
