@@ -1,8 +1,8 @@
 A simplistic Microsoft Azure hosted chat bot created for the final assessment in Microsoft Student Accelerator.
 
 ## Technologies/Libraries Used:
-- Microsoft's LUIS
-- Cognitive Emotion API (Through Microsoft Cognitive Services)
+- Microsoft's LUIS for NLP
+- Text Analytics API for Sentiment Analysis (Through Microsoft Cognitive Services)
 - Microsoft Bot Framework
 - Microsoft Azure (EasyTables and hosting it)
 
